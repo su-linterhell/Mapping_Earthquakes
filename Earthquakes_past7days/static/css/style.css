@@ -16,9 +16,9 @@ body,
 }
 
 .legend i {
-  float: letf;
+  float: left;
   width: 18px;
   height: 18px;
   margin-right: 8px;
-  opacity: .07;
+  opacity: .7;
 }
