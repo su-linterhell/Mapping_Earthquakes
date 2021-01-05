@@ -10,7 +10,7 @@ attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap
 });
 
 // We create the dark view tile layer that will be an option for our map.
-let dark = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+let satelliteStreets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
 attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery (c) <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
     accessToken: API_KEY
@@ -18,35 +18,25 @@ attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap
 
 // Create a base layer that holds both maps.
 let baseMaps = {
-  Street: streets,
-  Dark: dark
+  "Streets": streets,
+  "Satellite Streets": satelliteStreets
 };
 
 // Create the map object with center, zoom level and default layer.
 let map = L.map('mapid', {
-  center: [30, 30],
-  zoom: 2,
-  layers: [streets]
-})
+    center: [39.5, -98.5],
+    zoom: 3,
+    layers: [streets]
+  });
 
-// Pass our map layers into our layers control and add the layers control to the map.
+// Pass our map layers into our layer control and add the layer control to the map
 L.control.layers(baseMaps).addTo(map);
 
-// Then we add our 'graymap' tile layer to the map.
-// streets.addTo(map);
+// Accessing the GeoJSON data
+let earthquakes = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
 
-// Accessing the airport GeoJSON URL
-let airportData = "https://raw.githubusercontent.com/su-linterhell/Mapping_Earthquakes/main/majorAirports.json";
-
-// Grabbing our GeoJSON data.
-d3.json(airportData).then(function(data) {
-  console.log(data);
-  // Creating a GeoJSON layer with the retrieved data 
-  L.geoJson(data, {
-    onEachFeature: function(feature, layer) {
-      console.log(layer);
-      layer.bindPopup("<h3> AirportCode: " + feature.properties.faa + "</h3> <hr> <h3> Airport name: " + feature.properties.name + "</h3>");
-    }
-  }).addTo(map);
-  
+// Retrieve the earthquake GeoJSON data.
+d3.json(earthquakes).then(function(data) {
+  // Creating a GeoJSON layer with the retrieved data.
+  L.geoJson(data).addTo(map);
 });
